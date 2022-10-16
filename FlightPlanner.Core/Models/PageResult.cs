@@ -1,3 +1,5 @@
+using FlightPlanner.Core.Models;
+
 namespace FlightPlanner.Models;
 
 public class PageResult
