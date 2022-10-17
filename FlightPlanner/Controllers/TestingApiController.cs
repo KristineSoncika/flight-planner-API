@@ -7,17 +7,17 @@ namespace FlightPlanner.Controllers;
 [ApiController]
 public class TestingApiController : ControllerBase
 {
-    private readonly IFlightService _flightService;
+    private readonly IClearDb _clearDb;
 
-    public TestingApiController(IFlightService flightService)
+    public TestingApiController(IClearDb clearDb)
     {
-        _flightService = flightService;
+        _clearDb = clearDb;
     }
     
     [HttpPost]
     public IActionResult Clear()
     {
-        _flightService.ClearDatabase();
+        _clearDb.ClearDatabase();
         return Ok();
     }
 }

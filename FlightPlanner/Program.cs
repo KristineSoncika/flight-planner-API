@@ -53,6 +53,8 @@ builder.Services.AddScoped<IDbService, DbService>();
 builder.Services.AddScoped<IEntityService<Flight>, EntityService<Flight>>();
 builder.Services.AddScoped<IEntityService<Airport>, EntityService<Airport>>();
 builder.Services.AddScoped<IFlightService, FlightService>();
+builder.Services.AddScoped<IAirportService, AirportService>();
+builder.Services.AddScoped<IClearDb, ClearDb>();
 builder.Services.AddScoped<IFlightValidator, FlightCarrierValidator>();
 builder.Services.AddScoped<IFlightValidator, FlightTimeValidator>();
 builder.Services.AddScoped<IFlightValidator, FlightAirportValidator>();

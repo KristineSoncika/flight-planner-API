@@ -11,14 +11,17 @@ namespace FlightPlanner.Controllers;
 public class CustomerApiController : ControllerBase
 {
     private readonly IFlightService _flightService;
+    private readonly IAirportService _airportService;
     private readonly IEnumerable<IFlightSearchValidator> _flightSearchValidators;
     private readonly IMapper _mapper;
 
     public CustomerApiController(IFlightService flightService,
+        IAirportService airportService,
         IEnumerable<IFlightSearchValidator> flightSearchValidators,
         IMapper mapper)
     {
         _flightService = flightService;
+        _airportService = airportService;
         _flightSearchValidators = flightSearchValidators;
         _mapper = mapper;
     }
@@ -27,7 +30,7 @@ public class CustomerApiController : ControllerBase
     [HttpGet]
     public IActionResult GetAirport(string search)
     {
-        var airports = _flightService.FindAirport(search);
+        var airports = _airportService.FindAirport(search);
         var response = airports.Select(a => _mapper.Map<AirportRequest>(a));
         
         return Ok(response);

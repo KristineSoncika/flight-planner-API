@@ -27,19 +27,7 @@ public class FlightService: EntityService<Flight>, IFlightService
                                   f.From.AirportCode == flight.From.AirportCode &&
                                   f.To.AirportCode == flight.To.AirportCode);
     }
-    
-    public List<Airport> FindAirport(string search)
-    {
-        var formattedPhrase = search.ToLower().Trim();
 
-        var airports = _context.Airports
-            .Where(airport => airport.City.ToLower().Contains(formattedPhrase) ||
-                              airport.Country.ToLower().Contains(formattedPhrase) ||
-                              airport.AirportCode.ToLower().Contains(formattedPhrase));
-
-        return airports.ToList();
-    }
-    
     public PageResult SearchFlight(FlightSearch search)
      {
          var result = new PageResult();
@@ -63,11 +51,4 @@ public class FlightService: EntityService<Flight>, IFlightService
          result.TotalItems = totalItems;
          return result;
      }
-    
-    public void ClearDatabase()
-    {
-        _context.Flights.RemoveRange(_context.Flights);
-        _context.Airports.RemoveRange(_context.Airports);
-        _context.SaveChanges();
-    }
 }

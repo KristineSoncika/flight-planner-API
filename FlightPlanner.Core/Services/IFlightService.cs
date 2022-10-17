@@ -7,7 +7,5 @@ public interface IFlightService : IEntityService<Flight>
 {
     Flight GetCompleteFlightById(int id);
     bool Exists(Flight flight);
-    List<Airport> FindAirport(string search);
     PageResult SearchFlight(FlightSearch search);
-    void ClearDatabase();
 }
