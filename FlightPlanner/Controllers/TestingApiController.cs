@@ -1,5 +1,4 @@
-using FlightPlanner.Context;
-using FlightPlanner.Repositories;
+using FlightPlanner.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightPlanner.Controllers;
@@ -8,17 +7,17 @@ namespace FlightPlanner.Controllers;
 [ApiController]
 public class TestingApiController : ControllerBase
 {
-    private readonly FlightRepository _flightRepository;
+    private readonly IClearDb _clearDb;
 
-    public TestingApiController(FlightRepository flightRepository)
+    public TestingApiController(IClearDb clearDb)
     {
-        _flightRepository = flightRepository;
+        _clearDb = clearDb;
     }
     
     [HttpPost]
     public IActionResult Clear()
     {
-        _flightRepository.Clear();
+        _clearDb.ClearDatabase();
         return Ok();
     }
 }

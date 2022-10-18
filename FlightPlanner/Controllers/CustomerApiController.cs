@@ -1,6 +1,7 @@
+using AutoMapper;
+using FlightPlanner.Core.Services;
+using FlightPlanner.Core.Validations;
 using FlightPlanner.Models;
-using FlightPlanner.Repositories;
-using FlightPlanner.Validations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FlightPlanner.Controllers;
@@ -9,33 +10,43 @@ namespace FlightPlanner.Controllers;
 [ApiController]
 public class CustomerApiController : ControllerBase
 {
-    private readonly FlightRepository _flightRepository;
+    private readonly IFlightService _flightService;
+    private readonly IAirportService _airportService;
+    private readonly IEnumerable<IFlightSearchValidator> _flightSearchValidators;
+    private readonly IMapper _mapper;
 
-    public CustomerApiController(FlightRepository flightRepository)
+    public CustomerApiController(IFlightService flightService,
+        IAirportService airportService,
+        IEnumerable<IFlightSearchValidator> flightSearchValidators,
+        IMapper mapper)
     {
-        _flightRepository = flightRepository;
+        _flightService = flightService;
+        _airportService = airportService;
+        _flightSearchValidators = flightSearchValidators;
+        _mapper = mapper;
     }
     
     [Route("airports")]
     [HttpGet]
     public IActionResult GetAirport(string search)
     {
-        var airports = _flightRepository.FindAirport(search);
+        var airports = _airportService.FindAirport(search);
+        var response = airports.Select(a => _mapper.Map<AirportRequest>(a));
         
-        return Ok(airports);
+        return Ok(response);
     }
     
     [Route("flights/search")]
     [HttpPost]
-    public IActionResult SearchFlight(FlightSearch flightSearch)
+    public IActionResult SearchFlight(FlightSearch request)
     {
-        if (CustomerApiValidator.HasInvalidValues(flightSearch) ||
-            CustomerApiValidator.IsSameAirport(flightSearch))
+        if (!_flightSearchValidators.All(f => f.IsValid(request)))
         {
             return BadRequest();
         }
+        
+        var result = _flightService.SearchFlight(request);
 
-        var result = _flightRepository.SearchFlight(flightSearch);
         return Ok(result);
     }
     
@@ -43,13 +54,15 @@ public class CustomerApiController : ControllerBase
     [HttpGet]
     public IActionResult GetFlight(int id)
     {
-        var flight = _flightRepository.GetFlight(id);
+        var flight = _flightService.GetCompleteFlightById(id);
         
         if (flight == null)
         {
             return NotFound();
         }
         
-        return Ok(flight);
+        var response = _mapper.Map<FlightRequest>(flight);
+        
+        return Ok(response);
     }
 }
